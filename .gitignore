@@ -1,3 +1,13 @@
 .svn
 .DS_Store
 *.class
+
+netbeans_projects/SmartMeter/dist/SmartMeter.jar
+
+netbeans_projects/SmartMeter/dist/lib/RXTXcomm.jar
+
+netbeans_projects/SmartMeter/dist/lib/derby.jar
+
+netbeans_projects/SmartMeter/dist/lib/glassfish-jes.jar
+
+netbeans_projects/SmartMeter/dist/lib/jsr311-api.jar
