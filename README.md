@@ -19,7 +19,7 @@ Update the Operating System
 Do a test
 ---------
 
-Install a terminal program and it should give an output like this
+Install a terminal program and it should give you an output like this
 
     sudo apt-get install cu minicom   
     cu -l /dev/ttyUSB0 -s 9600 --parity=none
@@ -90,15 +90,19 @@ Download Java SE Embedded and Embedded Suite.
 Follow [this blogpost](http://adf4beginners.blogspot.nl/2013/04/how-to-get-java-embedded-suite-running.html)  
 
 Java SE Embedded 7 (here). Make sure you download ARMv6/7 Linux - Headless EABI, VFP, SoftFP ABI, Little Endian  
+
      tar -zxvf *.gz
+
 This should create /home/pi/ejre1.7.0_21
 
-Change your .profile of pi user  
-And add the following lines:
+Change your .profile of the pi user  
+And add the following lines   
+
      export JAVA_HOME=/home/pi/ejre1.7.0_21
      export PATH=$JAVA_HOME/bin:$PATH
 
 Test the java 
+
      pi@raspberrypi ~ $ java -version
      java version "1.7.0_21"
      Java(TM) SE Embedded Runtime Environment (build 1.7.0_21-b11, headless)
@@ -108,7 +112,7 @@ Oracle Java Embedded Suite for 'ARMv6/v7 Linux'
 upload JES and extract this to /home/pi/jes7.0  
 
 
-[install RXTX](http://rxtx.qbang.org/wiki/index.php/Download)
+[RXTX](http://rxtx.qbang.org/wiki/index.php/Download)  
 http://eclipsesource.com/blogs/2012/10/17/serial-communication-in-java-with-raspberry-pi-and-rxtx/  
 We will use RXTX to do the serial communication  
 
@@ -117,8 +121,8 @@ We will use RXTX to do the serial communication
 Test the application
 --------------------
 
-mkdir /home/pi/smartmeter
-upload startWeb.sh and webhost.jar
+mkdir /home/pi/smartmeter  
+upload startWeb.sh and the webhost.jar  
 
 Open and build the application in netbeans.
 
@@ -147,9 +151,9 @@ upload the SmartMeter.jar from the netbeans smartapplication dist folder to /hom
 Retrieve the restful data
 -------------------------
 
-Open chrome and download and use the advanced rest client plugin.
+Open google chrome browser and install and use the advanced rest client plugin.
 
-     GET http://xxxx:8080/SmartMeter/listDevices
+GET http://xxxx:8080/SmartMeter/listDevices
      
      {"device":
       [
@@ -158,7 +162,7 @@ Open chrome and download and use the advanced rest client plugin.
       ]
      }
      
-     GET http://xxxx:8080/SmartMeter/listGas     
+GET http://xxxx:8080/SmartMeter/listGas     
      {"gasMeasurement":
       [
         {"device":{"id":"4","type":"GAS","device":"3238303131303031323331333231343132"},
@@ -172,7 +176,7 @@ Open chrome and download and use the advanced rest client plugin.
       ]
      }
      
-     GET http://xxxx:8080/SmartMeter/listEnergy
+GET http://xxxx:8080/SmartMeter/listEnergy
      
      { "energyMeasurement":
        [
