@@ -6,13 +6,16 @@ package nl.biemond.smartmeter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import nl.biemond.smartmeter.entities.Device;
 import nl.biemond.smartmeter.entities.EnergyMeasurement;
+import nl.biemond.smartmeter.entities.GasMeasurement;
 
 /**
  *
@@ -34,7 +37,7 @@ public class MeasurementsDbStore {
             Class.forName(DB_DRIVER);
             connection = DriverManager.getConnection(DB_URL + ";create=true;dataEncryption=false;bootPassword=" + DB_KEY, null);
             statement = connection.createStatement();
-            System.out.println("connection made");  
+            System.out.println("connection made");
         } catch (ClassNotFoundException cnfe) {
             System.out.println("Please put derby.jar in the classpath");
             System.exit(1);
@@ -51,15 +54,16 @@ public class MeasurementsDbStore {
         } catch (SQLException ignored) {
             // ignore if already exist.
         }
+
         try {
             statement.execute(
                     "CREATE TABLE gas_measurements"
-                    + "( id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) CONSTRAINT GAS_PK PRIMARY KEY"
-                    + ", device INTEGER NOT NULL CONSTRAINT gas_device_fk REFERENCES devices"
-                    + ", date DATE NOT NULL"
-                    + ", time TIMESTAMP NOT NULL"
-                    + ", measurement INTEGER"
-                    + ", active INTEGER"
+                    + "( id          INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) CONSTRAINT GAS_PK PRIMARY KEY"
+                    + ", device      INTEGER NOT NULL CONSTRAINT gas_device_fk REFERENCES devices"
+                    + ", date        DATE NOT NULL"
+                    + ", time        TIMESTAMP NOT NULL"
+                    + ", measurement NUMERIC(8,3)"
+                    + ", enabled     INTEGER"
                     + ")");
         } catch (SQLException ignored) {
             // ignore if already exist.
@@ -92,7 +96,7 @@ public class MeasurementsDbStore {
     protected void finalize() throws Throwable {
         super.finalize();
         // cleanup 
-        System.out.println("connection finalize");  
+        System.out.println("connection finalize");
 
         try {
             if (statement != null) {
@@ -119,7 +123,7 @@ public class MeasurementsDbStore {
         if (instance == null) {
             instance = new MeasurementsDbStore();
         }
-        System.out.println("return instance");  
+        System.out.println("return instance");
 
         return instance;
     }
@@ -129,8 +133,11 @@ public class MeasurementsDbStore {
         ResultSet resultset = null;
         int deviceId = 0;
         try {
-            resultset = statement.executeQuery("SELECT id FROM devices where type = '"
-                    + type + "' and device = '" + device + "'");
+            String select = "SELECT id FROM devices where type = ? and device = ?";
+            PreparedStatement pstmt = connection.prepareStatement(select);
+            pstmt.setString(1, type);
+            pstmt.setString(2, device);
+            resultset = pstmt.executeQuery();
 
             while (resultset.next()) {
                 deviceId = resultset.getInt(1);
@@ -146,28 +153,32 @@ public class MeasurementsDbStore {
             }
         }
         return deviceId;
-        
+
     }
 
-    
     public int addDevice(String type, String device) {
 
-        int deviceId = findDevice(type,device);
+        int deviceId = findDevice(type, device);
 
         if (deviceId == 0) {
             try {
-                statement.execute("INSERT INTO devices(type,device) VALUES ("
-                        + "'" + type + "','" + device + "'"
-                        + ")");
-                return findDevice(type,device);
- 
+
+                String insert = "INSERT INTO devices(type,device) VALUES (?,?)";
+                PreparedStatement pstmt = connection.prepareStatement(insert);
+                pstmt.setString(1, type);
+                pstmt.setString(2, device);
+                pstmt.executeUpdate();
+
+
+                return findDevice(type, device);
+
             } catch (SQLException se) {
                 se.printStackTrace();
             }
- 
-        } 
-        return deviceId; 
-     }
+
+        }
+        return deviceId;
+    }
 
     public List<Device> listDevices() {
         ResultSet resultset = null;
@@ -194,25 +205,97 @@ public class MeasurementsDbStore {
         return list;
     }
 
-    public void addEnergyMeasurement( int device, float meter181, float meter182, float meter281, float meter282
-                                    , String tarif, float currentConsumption, float currentProduction,int enabled) {
+    public void addGasMeasurement(int device, Date time, float measurement, int enabled) {
+        int found = 0;
         try {
-            statement.execute("INSERT INTO energy_measurements"
-                    + "(device, date,time,meter181,meter182"
-                    + ",meter281,meter282,tarif,currentConsumption,currentProduction,enabled "
-                    + ") VALUES ("
-                    + device + ","
-                    + "CURRENT_DATE,"
-                    + "CURRENT_TIMESTAMP,"
-                    + meter181 + ","
-                    + meter182 + ","
-                    + meter281 + ","
-                    + meter282 + ","
-                    + "'"+tarif + "',"
-                    + currentConsumption + ","
-                    + currentProduction + ","
-                    + enabled
-                    + ")");
+            String select = " select 1 from gas_measurements where "
+                    + " device = ? and date = ? and time = ?";
+            PreparedStatement pstmt = connection.prepareStatement(select);
+            pstmt.setInt(1, device);
+            pstmt.setDate(2, new java.sql.Date(time.getTime()));
+            pstmt.setTimestamp(3, new java.sql.Timestamp(time.getTime()));
+            ResultSet resultset = pstmt.executeQuery();
+            while (resultset.next()) {
+                found = resultset.getInt(1);
+            }
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+      if ( found == 0) {
+        try {
+            String insert = " INSERT INTO gas_measurements"
+                    + " (device, date,time,measurement,enabled )"
+                    + " VALUES (?,?,?,?,? )";
+            PreparedStatement pstmt = connection.prepareStatement(insert);
+            pstmt.setInt(1, device);
+            pstmt.setDate(2, new java.sql.Date(time.getTime()));
+            pstmt.setTimestamp(3, new java.sql.Timestamp(time.getTime()));
+            pstmt.setFloat(4, measurement);
+            pstmt.setInt(5, enabled);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+      }  
+    }
+
+    public List<GasMeasurement> listGasMeasurement() {
+        ResultSet resultset = null;
+        ArrayList<GasMeasurement> list = new ArrayList<>();
+        try {
+            resultset = statement.executeQuery(
+                    " SELECT e.id, date,time,measurement"
+                    + " ,enabled, d.id, d.type, d.device"
+                    + " FROM gas_measurements e "
+                    + " ,    devices d "
+                    + " WHERE e.device = d.id "
+                    + " ORDER BY e.id desc");
+            while (resultset.next()) {
+                list.add(new GasMeasurement(
+                        resultset.getInt(1),
+                        resultset.getDate(2),
+                        resultset.getTimestamp(3),
+                        resultset.getFloat(4),
+                        resultset.getInt(5),
+                        new Device(
+                        resultset.getInt(6),
+                        resultset.getString(7),
+                        resultset.getString(8))));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                if (resultset != null) {
+                    resultset.close();
+                }
+            } catch (SQLException ignored) {
+            }
+        }
+        return list;
+    }
+
+    public void addEnergyMeasurement(int device, float meter181, float meter182, float meter281, float meter282, String tarif, float currentConsumption, float currentProduction, int enabled) {
+        try {
+
+            String insert = "INSERT INTO energy_measurements (device, date,time,meter181,meter182"
+                    + ",meter281,meter282,tarif,currentConsumption,currentProduction,enabled )"
+                    + " VALUES (?,CURRENT_DATE,CURRENT_TIMESTAMP,?,?,?,?,?,?,?,? )";
+            PreparedStatement pstmt = connection.prepareStatement(insert);
+            pstmt.setInt(1, device);
+            pstmt.setFloat(2, meter181);
+            pstmt.setFloat(3, meter182);
+            pstmt.setFloat(4, meter281);
+            pstmt.setFloat(5, meter282);
+            pstmt.setString(6, tarif);
+            pstmt.setFloat(7, currentConsumption);
+            pstmt.setFloat(8, currentProduction);
+            pstmt.setInt(9, enabled);
+            pstmt.executeUpdate();
+
         } catch (SQLException se) {
             se.printStackTrace();
         }

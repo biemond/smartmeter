@@ -60,7 +60,7 @@ public class ProcessData {
                 } else {
                     System.out.println("Error: Only serial ports are handled by this example.");
                 }
-                Thread.sleep(60000);
+                Thread.sleep(1800000);
             }
         }
     }
@@ -110,7 +110,10 @@ public class ProcessData {
         Integer elecSwitch = 0;
         String  tarif = new String();
         
-        String gasSerialId = null;
+        String  gasSerialId = null;
+        Float   measurement = new Float(0);
+        Integer gasSwitch   = 0;
+        Date    gasDate     = new Date();
         
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
@@ -146,18 +149,16 @@ public class ProcessData {
 
                 // gas 
                 if (line.startsWith("0-1:24.3.0")) {
-                    Date gasDate;
                     try {
                         gasDate = new SimpleDateFormat("yyMMddhhmmss", Locale.ENGLISH).parse(line.substring(11, 23));
-                        System.out.println("Gas measure date:" + gasDate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     line = scanner.nextLine();
-                    System.out.println("Gas:" + Float.valueOf(line.substring(line.indexOf("(") + 1, line.indexOf(")"))) + " dm3");
+                    measurement = Float.valueOf(line.substring(line.indexOf("(") + 1, line.indexOf(")")));
 
                 } else if (line.startsWith("0-1:24.4.0")) {
-                    System.out.println("gas switch:" + line.substring(line.indexOf("(") + 1, line.indexOf(")")));
+                    gasSwitch = Integer.valueOf(line.substring(line.indexOf("(") + 1, line.indexOf(")")));
 
                 } else if (line.startsWith("0-1:96.1.0")) {
                     gasSerialId = line.substring(line.indexOf("(") + 1, line.indexOf(")"));
@@ -174,6 +175,9 @@ public class ProcessData {
         }
         if ( gasSerialId != null) {
            int gasDeviceId = store.addDevice("GAS", gasSerialId);
+           if ( gasDeviceId != 0 ) {
+               store.addGasMeasurement( gasDeviceId, gasDate , measurement,gasSwitch);
+           }    
         }
      }
 

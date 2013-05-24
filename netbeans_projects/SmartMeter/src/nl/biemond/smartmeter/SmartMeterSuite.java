@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import nl.biemond.smartmeter.entities.Device;
 import nl.biemond.smartmeter.entities.EnergyMeasurement;
+import nl.biemond.smartmeter.entities.GasMeasurement;
 
 /**
  *
@@ -27,28 +28,37 @@ public class SmartMeterSuite {
     MeasurementsDbStore store = MeasurementsDbStore.getInstance();
     
     @GET
-    @Produces({MediaType.TEXT_PLAIN, MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML})
     public String getText() {
         return MESSAGE;
     }
 
     @GET
     @Path("listDevices")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     public List<Device> getList() {
         return store.listDevices();
     }
 
     @GET
     @Path("listEnergy")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     public List<EnergyMeasurement> getEnergyList() {
         return store.listEnergyMeasurement();
     }    
+
+    @GET
+    @Path("listGas")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<GasMeasurement> getGasList() {
+        return store.listGasMeasurement();
+    }    
+    
+    
     
     @GET
     @Path("deleteDatabase")
-    @Produces({MediaType.TEXT_PLAIN, MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML})
     public String deleteDatabase() {
         store.deleteEnergy();
         store.deleteGas();

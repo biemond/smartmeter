@@ -4,8 +4,7 @@
  */
 package nl.biemond.smartmeter.entities;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -18,7 +17,7 @@ public class EnergyMeasurement {
     public EnergyMeasurement(){
     }
 
-    public EnergyMeasurement(int id, Date date, Timestamp time, float meter181, float meter182, float meter281, float meter282, String tarif, float currentConsumption, float currentProduction, int enabled,Device device) {
+    public EnergyMeasurement(int id, Date date, Date time, float meter181, float meter182, float meter281, float meter282, String tarif, float currentConsumption, float currentProduction, int enabled,Device device) {
         this.id = id;
         this.device = device;
         this.date = date;
@@ -35,8 +34,10 @@ public class EnergyMeasurement {
  
     public Device device;
     public int id;
+    
+    
     public Date date;
-    public Timestamp time;
+    public Date time;
     public float meter181;
     public float meter182;
     public float meter281;
