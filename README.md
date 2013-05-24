@@ -87,7 +87,7 @@ Oracle Java Embedded Suite and Java SE Embedded
 
 Download Java SE Embedded and Embedded Suite.
 
-Follow [this blogpost](http://adf4beginners.blogspot.nl/2013/04/how-to-get-java-embedded-suite-running.html)  
+Extra information in [this blogpost](http://adf4beginners.blogspot.nl/2013/04/how-to-get-java-embedded-suite-running.html)  
 
 Java SE Embedded 7 (here). Make sure you download ARMv6/7 Linux - Headless EABI, VFP, SoftFP ABI, Little Endian  
 
@@ -114,7 +114,7 @@ upload JES and extract this to /home/pi/jes7.0
 
 [RXTX](http://rxtx.qbang.org/wiki/index.php/Download)  
 http://eclipsesource.com/blogs/2012/10/17/serial-communication-in-java-with-raspberry-pi-and-rxtx/  
-We will use RXTX to do the serial communication  
+We will use the RXTX library to do all the serial communication  
 
    sudo apt-get install librxtx-java
 
@@ -162,7 +162,8 @@ GET http://xxxx:8080/SmartMeter/listDevices
       ]
      }
      
-GET http://xxxx:8080/SmartMeter/listGas     
+GET http://xxxx:8080/SmartMeter/listGas 
+    
      {"gasMeasurement":
       [
         {"device":{"id":"4","type":"GAS","device":"3238303131303031323331333231343132"},
