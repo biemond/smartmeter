@@ -159,7 +159,8 @@ Retrieve the restful data
 -------------------------
 
 Open google chrome browser and install and use the advanced rest client plugin.
-
+                                  
+all the measured devices                                  
 GET http://xxxx:8080/SmartMeter/listDevices
      
     {
@@ -176,7 +177,8 @@ GET http://xxxx:8080/SmartMeter/listDevices
           }
        ]
     }
-         
+
+List all the gas measurements for 2013-05-25         
 GET http://192.168.2.10:8080/SmartMeter/listGas/2013-05-25 
     
     {
@@ -208,6 +210,7 @@ GET http://192.168.2.10:8080/SmartMeter/listGas/2013-05-25
         ]
     }      
      
+List all the energy measurements for 2013-05-24
 GET http://192.168.2.10:8080/SmartMeter/listEnergy/2013-05-24
      
     {
@@ -251,7 +254,7 @@ GET http://192.168.2.10:8080/SmartMeter/listEnergy/2013-05-24
         ]
     }
     
-# all the gas overview per day and with differences for device 4 
+all the gas overview per day and with differences for device 4 
 GET http://192.168.2.10:8080/SmartMeter/listGasOverview/4
 
     {
@@ -279,7 +282,7 @@ GET http://192.168.2.10:8080/SmartMeter/listGasOverview/4
        ]
     }
     
-# all the energy overview per day and with differences for device 3 
+all the energy overview per day and with differences for device 3   
 GET http://192.168.2.10:8080/SmartMeter/listEnergyOverview/3
 
     {
@@ -311,5 +314,5 @@ GET http://192.168.2.10:8080/SmartMeter/listEnergyOverview/3
        ]
     }
     
-# clean the database
+clean the database  
 GET http://192.168.2.10:8080/SmartMeter/deleteDatabase      
