@@ -17,4 +17,4 @@ JES_JERSEY_CLASSPATH="$JES_HOME/jersey/lib/asm.jar:$JES_JERSEY_SERVER_CLASSPATH"
 
 JES_CLASSPATH="$SMARTMETER_CLASSPATH:$JES_JERSEY_CLASSPATH:$JES_GLASSFISH_CLASSPATH:$JES_JERSEY_SERVLET_CLASSPATH:$JES_JAVADB_CLASSPATH"
 
-java -Xmx128m -Djava.library.path=/usr/lib/jni -classpath $JES_CLASSPATH com.oracle.jes.util.webhost.LightweightHost /home/pi/smartmeter/SmartMeter.jar nl.biemond.smartmeter.SmartMeterApplication
+java -Xmx128m -Djava.library.path=/usr/lib/jni -classpath $JES_CLASSPATH com.oracle.jes.util.webhost.LightweightHost -port 8080 -timeout 604800 /home/pi/smartmeter/SmartMeter.jar nl.biemond.smartmeter.SmartMeterApplication
