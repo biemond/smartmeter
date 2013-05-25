@@ -10,12 +10,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import nl.biemond.smartmeter.entities.Device;
 import nl.biemond.smartmeter.entities.EnergyMeasurement;
+import nl.biemond.smartmeter.entities.EnergyOverview;
 import nl.biemond.smartmeter.entities.GasMeasurement;
+import nl.biemond.smartmeter.entities.GasOverview;
 
 /**
  *
@@ -242,17 +245,25 @@ public class MeasurementsDbStore {
       }  
     }
 
-    public List<GasMeasurement> listGasMeasurement() {
+    public List<GasMeasurement> listGasMeasurement(Date day) {
+        System.out.println("GasMeasurement for day: "+day);
+        if ( day == null ) {
+          return null;
+        }          
         ResultSet resultset = null;
         ArrayList<GasMeasurement> list = new ArrayList<>();
         try {
-            resultset = statement.executeQuery(
+            String select =
                     " SELECT e.id, date,time,measurement"
                     + " ,enabled, d.id, d.type, d.device"
                     + " FROM gas_measurements e "
                     + " ,    devices d "
                     + " WHERE e.device = d.id "
-                    + " ORDER BY e.id desc");
+                    + " AND e.date = ? "
+                    + " ORDER BY e.id desc";
+            PreparedStatement pstmt = connection.prepareStatement(select);
+            pstmt.setDate(1, new java.sql.Date(day.getTime()));
+            resultset = pstmt.executeQuery();           
             while (resultset.next()) {
                 list.add(new GasMeasurement(
                         resultset.getInt(1),
@@ -278,6 +289,54 @@ public class MeasurementsDbStore {
         return list;
     }
 
+     public List<GasOverview> listGasOverview(int deviceId) {
+        System.out.println("GasOverview for deviceId: "+deviceId);
+        ResultSet resultset = null;
+        ArrayList<GasOverview> list = new ArrayList<>();
+        try {
+            String select  = 
+                      " SELECT date, CAST(avg(measurement) AS NUMERIC(8,2)), d.id, d.type, d.device"
+                    + " FROM gas_measurements e "
+                    + " ,    devices d "
+                    + " WHERE e.device = d.id "
+                    + " AND   d.id = ? "
+                    + " GROUP BY date, d.id, d.type, d.device "
+                    + " ORDER BY date desc";
+            PreparedStatement pstmt = connection.prepareStatement(select);
+            pstmt.setInt(1, deviceId);
+            resultset = pstmt.executeQuery();
+            
+            float lastEntry = 0;
+            float difference = 0;
+            while (resultset.next()) {
+                
+                if ( lastEntry != 0 ){
+                    difference = lastEntry - resultset.getFloat(2);
+                }
+                lastEntry = resultset.getFloat(2);
+                list.add(new GasOverview(
+                        resultset.getDate(1),
+                        resultset.getFloat(2),
+                        Math.round(difference),
+                        new Device(
+                        resultset.getInt(3),
+                        resultset.getString(4),
+                        resultset.getString(5))));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                if (resultset != null) {
+                    resultset.close();
+                }
+            } catch (SQLException ignored) {
+            }
+        }
+        return list;
+    }
+   
+    
     public void addEnergyMeasurement(int device, float meter181, float meter182, float meter281, float meter282, String tarif, float currentConsumption, float currentProduction, int enabled) {
         try {
 
@@ -301,11 +360,17 @@ public class MeasurementsDbStore {
         }
     }
 
-    public List<EnergyMeasurement> listEnergyMeasurement() {
+    
+    
+    public List<EnergyMeasurement> listEnergyMeasurement(Date day) {
+        System.out.println("EnergyMeasurement for day: "+day);
+        if ( day == null ) {
+          return null;
+        }  
         ResultSet resultset = null;
         ArrayList<EnergyMeasurement> list = new ArrayList<>();
         try {
-            resultset = statement.executeQuery(
+            String select =
                     " SELECT e.id, date,time,meter181,meter182"
                     + " ,meter281,meter282,tarif,currentConsumption"
                     + " ,currentProduction"
@@ -313,7 +378,12 @@ public class MeasurementsDbStore {
                     + " FROM energy_measurements e "
                     + " ,    devices d "
                     + " WHERE e.device = d.id "
-                    + " ORDER BY e.id desc");
+                    + " and   e.date = ? "
+                    + " ORDER BY e.id desc";
+            PreparedStatement pstmt = connection.prepareStatement(select);
+            pstmt.setDate(1, new java.sql.Date(day.getTime()));
+            resultset = pstmt.executeQuery();
+            
             while (resultset.next()) {
                 list.add(new EnergyMeasurement(
                         resultset.getInt(1),
@@ -345,6 +415,65 @@ public class MeasurementsDbStore {
         return list;
     }
 
+    public List<EnergyOverview> listEnergyOverview(int deviceId) {
+        System.out.println("EnergyOverview for deviceId: "+deviceId);
+        ResultSet resultset = null;
+        ArrayList<EnergyOverview> list = new ArrayList<>();
+        try {
+            String select  = 
+                      " SELECT date, "
+                    + " CAST(avg(meter181+meter182) AS NUMERIC(8,2)), "
+                    + " CAST(avg(meter281+meter282) AS NUMERIC(8,2)), "
+                    + " d.id, d.type, d.device"
+                    + " FROM energy_measurements e "
+                    + " ,    devices d "
+                    + " WHERE e.device = d.id "
+                    + " AND   d.id = ? "
+                    + " GROUP BY date, d.id, d.type, d.device "
+                    + " ORDER BY date desc";
+            PreparedStatement pstmt = connection.prepareStatement(select);
+            pstmt.setInt(1, deviceId);
+            resultset = pstmt.executeQuery();
+            
+            float lastEntryConsumption = 0;
+            float differenceConsumption = 0;
+            float lastEntryProduction = 0;
+            float differenceProduction = 0;
+            while (resultset.next()) {
+                
+                if ( lastEntryConsumption != 0 ){
+                    differenceConsumption = lastEntryConsumption - resultset.getFloat(2);
+                }
+                lastEntryConsumption = resultset.getFloat(2);
+                if ( lastEntryProduction != 0 ){
+                    differenceProduction = lastEntryProduction - resultset.getFloat(3);
+                }
+                lastEntryProduction = resultset.getFloat(3);
+                list.add(new EnergyOverview(
+                        resultset.getDate(1),
+                        resultset.getFloat(2),
+                        Math.round(differenceConsumption),
+                        resultset.getFloat(3),
+                        Math.round(differenceProduction),
+                        new Device(
+                        resultset.getInt(4),
+                        resultset.getString(5),
+                        resultset.getString(6))));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                if (resultset != null) {
+                    resultset.close();
+                }
+            } catch (SQLException ignored) {
+            }
+        }
+        return list;
+    }
+    
+    
     public void deleteEnergy() {
         try {
             statement.execute("DELETE FROM energy_measurements");

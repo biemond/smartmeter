@@ -162,51 +162,153 @@ Open google chrome browser and install and use the advanced rest client plugin.
 
 GET http://xxxx:8080/SmartMeter/listDevices
      
-     {"device":
-      [
-       {"id":"3","type":"ELEC","device":"4B414C37303035313039373534393132"},
-       {"id":"4","type":"GAS","device":"3238303131303031323331333231343132"}
-      ]
-     }
-     
-GET http://xxxx:8080/SmartMeter/listGas 
-    
-     {"gasMeasurement":
-      [
-        {"device":{"id":"4","type":"GAS","device":"3238303131303031323331333231343132"},
-         "id":"9","date":"2013-05-24T00:00:00+02:00","time":"2013-05-24T23:00:00+02:00",
-           "measurement":"1172.183","enabled":"1"
-        },
-        {"device":{"id":"4","type":"GAS","device":"3238303131303031323331333231343132"},
-         "id":"8","date":"2013-05-24T00:00:00+02:00","time":"2013-05-24T22:00:00+02:00",
-           "measurement":"1171.827","enabled":"1"
-        }
-      ]
-     }
-     
-GET http://xxxx:8080/SmartMeter/listEnergy
-     
-     { "energyMeasurement":
-       [
-         {"device":{"id":"3","type":"ELEC","device":"4B414C37303035313039373534393132"},
-          "id":"32","date":"2013-05-24T00:00:00+02:00","time":"2013-05-24T23:14:31.756+02:00",
-          "meter181":"661.203","meter182":"402.298","meter281":"121.884","meter282":"250.225",
-          "tarif":"0001","currentConsumption":"350.0","currentProduction":"0.0","enabled":"1"
-         },
-         {"device":{"id":"3","type":"ELEC","device":"4B414C37303035313039373534393132"},
-          "id":"31","date":"2013-05-24T00:00:00+02:00","time":"2013-05-24T22:44:36.223+02:00",
-          "meter181":"661.111","meter182":"402.222","meter281":"121.884","meter282":"250.225",
-          "tarif":"0002","currentConsumption":"270.0","currentProduction":"0.0","enabled":"1"
-         },
-         {"device":{"id":"3","type":"ELEC","device":"4B414C37303035313039373534393132"},
-          "id":"30","date":"2013-05-24T00:00:00+02:00","time":"2013-05-24T22:42:01.530+02:00",
-          "meter181":"661.111","meter182":"402.21","meter281":"121.884","meter282":"250.225",
-          "tarif":"0002","currentConsumption":"260.0","currentProduction":"0.0","enabled":"1"
-         },
-         {"device":{"id":"3","type":"ELEC","device":"4B414C37303035313039373534393132"},
-          "id":"29","date":"2013-05-24T00:00:00+02:00","time":"2013-05-24T22:41:01.691+02:00",
-          "meter181":"661.111","meter182":"402.207","meter281":"121.884","meter282":"250.225",
-          "tarif":"0002","currentConsumption":"260.0","currentProduction":"0.0","enabled":"1"
-         }
+    {
+       "device":[
+          {
+             "id":"3",
+             "type":"ELEC",
+             "device":"4B414C37303035313039373534393132"
+          },
+          {
+             "id":"4",
+             "type":"GAS",
+             "device":"3238303131303031323331333231343132"
+          }
        ]
-     }
+    }
+         
+GET http://192.168.2.10:8080/SmartMeter/listGas/2013-05-25 
+    
+    {
+       "gasMeasurement":[
+          {
+             "device":{
+                "id":"4",
+                "type":"GAS",
+                "device":"3238303131303031323331333231343132"
+             },
+             "id":"19",
+             "date":"2013-05-25T00:00:00+02:00",
+             "time":"2013-05-25T21:00:00+02:00",
+             "measurement":"1175.022",
+             "enabled":"1"
+          },
+          {
+             "device":{
+                "id":"4",
+                "type":"GAS",
+                "device":"3238303131303031323331333231343132"
+             },
+             "id":"18",
+             "date":"2013-05-25T00:00:00+02:00",
+             "time":"2013-05-25T20:00:00+02:00",
+             "measurement":"1175.012",
+             "enabled":"1"
+          }
+        ]
+    }      
+     
+GET http://192.168.2.10:8080/SmartMeter/listEnergy/2013-05-24
+     
+    {
+       "energyMeasurement":[
+          {
+             "device":{
+                "id":"3",
+                "type":"ELEC",
+                "device":"4B414C37303035313039373534393132"
+             },
+             "id":"33",
+             "date":"2013-05-24T00:00:00+02:00",
+             "time":"2013-05-24T23:47:56.072+02:00",
+             "meter181":"661.405",
+             "meter182":"402.298",
+             "meter281":"121.884",
+             "meter282":"250.225",
+             "tarif":"0001",
+             "currentConsumption":"270.0",
+             "currentProduction":"0.0",
+             "enabled":"1"
+          },
+          {
+             "device":{
+                "id":"3",
+                "type":"ELEC",
+                "device":"4B414C37303035313039373534393132"
+             },
+             "id":"32",
+             "date":"2013-05-24T00:00:00+02:00",
+             "time":"2013-05-24T23:14:31.756+02:00",
+             "meter181":"661.203",
+             "meter182":"402.298",
+             "meter281":"121.884",
+             "meter282":"250.225",
+             "tarif":"0001",
+             "currentConsumption":"350.0",
+             "currentProduction":"0.0",
+             "enabled":"1"
+          }
+        ]
+    }
+    
+# all the gas overview per day and with differences for device 4 
+GET http://192.168.2.10:8080/SmartMeter/listGasOverview/4
+
+    {
+       "gasOverview":[
+          {
+             "device":{
+                "id":"4",
+                "type":"GAS",
+                "device":"3238303131303031323331333231343132"
+             },
+             "date":"2013-05-25T00:00:00+02:00",
+             "consumption":"1174.38",
+             "difference":"0"
+          },
+          {
+             "device":{
+                "id":"4",
+                "type":"GAS",
+                "device":"3238303131303031323331333231343132"
+             },
+             "date":"2013-05-24T00:00:00+02:00",
+             "consumption":"1172.0",
+             "difference":"2"
+          }
+       ]
+    }
+    
+# all the energy overview per day and with differences for device 3 
+GET http://192.168.2.10:8080/SmartMeter/listEnergyOverview/3
+    {
+       "energyOverview":[
+          {
+             "date":"2013-05-25T00:00:00+02:00",
+             "consumption":"1066.49",
+             "consDifference":"0",
+             "production":"373.67",
+             "prodDifference":"0",
+             "device":{
+                "id":"3",
+                "type":"ELEC",
+                "device":"4B414C37303035313039373534393132"
+             }
+          },
+          {
+             "date":"2013-05-24T00:00:00+02:00",
+             "consumption":"1063.43",
+             "consDifference":"3",
+             "production":"372.1",
+             "prodDifference":"2",
+             "device":{
+                "id":"3",
+                "type":"ELEC",
+                "device":"4B414C37303035313039373534393132"
+             }
+          }
+       ]
+    }
+    
+# clean the database
+GET http://192.168.2.10:8080/SmartMeter/deleteDatabase      
