@@ -281,6 +281,7 @@ GET http://192.168.2.10:8080/SmartMeter/listGasOverview/4
     
 # all the energy overview per day and with differences for device 3 
 GET http://192.168.2.10:8080/SmartMeter/listEnergyOverview/3
+
     {
        "energyOverview":[
           {
