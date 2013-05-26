@@ -10,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -301,7 +300,7 @@ public class MeasurementsDbStore {
                     + " WHERE e.device = d.id "
                     + " AND   d.id = ? "
                     + " GROUP BY date, d.id, d.type, d.device "
-                    + " ORDER BY date desc";
+                    + " ORDER BY date ";
             PreparedStatement pstmt = connection.prepareStatement(select);
             pstmt.setInt(1, deviceId);
             resultset = pstmt.executeQuery();
@@ -311,7 +310,7 @@ public class MeasurementsDbStore {
             while (resultset.next()) {
                 
                 if ( lastEntry != 0 ){
-                    difference = lastEntry - resultset.getFloat(2);
+                    difference =  resultset.getFloat(2) - lastEntry;
                 }
                 lastEntry = resultset.getFloat(2);
                 list.add(new GasOverview(
@@ -430,7 +429,7 @@ public class MeasurementsDbStore {
                     + " WHERE e.device = d.id "
                     + " AND   d.id = ? "
                     + " GROUP BY date, d.id, d.type, d.device "
-                    + " ORDER BY date desc";
+                    + " ORDER BY date ";
             PreparedStatement pstmt = connection.prepareStatement(select);
             pstmt.setInt(1, deviceId);
             resultset = pstmt.executeQuery();
@@ -442,11 +441,11 @@ public class MeasurementsDbStore {
             while (resultset.next()) {
                 
                 if ( lastEntryConsumption != 0 ){
-                    differenceConsumption = lastEntryConsumption - resultset.getFloat(2);
+                    differenceConsumption = resultset.getFloat(2) -lastEntryConsumption;
                 }
                 lastEntryConsumption = resultset.getFloat(2);
                 if ( lastEntryProduction != 0 ){
-                    differenceProduction = lastEntryProduction - resultset.getFloat(3);
+                    differenceProduction = resultset.getFloat(3) -lastEntryProduction;
                 }
                 lastEntryProduction = resultset.getFloat(3);
                 list.add(new EnergyOverview(
