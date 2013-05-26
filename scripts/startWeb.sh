@@ -6,7 +6,7 @@
 
 JES_HOME=/home/pi/jes7.0
 
-SMARTMETER_CLASSPATH="/usr/share/java/RXTXcomm.jar:SmartMeter.jar:webhost.jar"
+SMARTMETER_CLASSPATH="/usr/share/java/RXTXcomm.jar:SmartMeter.jar:webhost.jar:jackson-mapper-asl-1.9.12.jar:jackson-core-asl-1.9.12.jar"
 
 JES_GLASSFISH_CLASSPATH="$JES_HOME/glassfish/lib/glassfish-jes.jar"
 JES_JAVADB_CLASSPATH="$JES_HOME/javadb/lib/derby.jar:$JES_HOME/javadb/lib/derbytools.jar"

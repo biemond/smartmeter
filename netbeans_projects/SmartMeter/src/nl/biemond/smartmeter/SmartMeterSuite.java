@@ -4,11 +4,14 @@
  */
 package nl.biemond.smartmeter;
 
+import com.sun.jersey.api.json.JSONWithPadding;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import nl.biemond.smartmeter.entities.Device;
 import nl.biemond.smartmeter.entities.EnergyMeasurement;
@@ -37,37 +40,71 @@ public class SmartMeterSuite {
 
     @GET
     @Path("listDevices")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<Device> getList() {
-        return store.listDevices();
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    public JSONWithPadding getList(@QueryParam("callback") String callback) {
+        System.out.println("callback id: " + callback);
+        if (null == callback) {
+            return new JSONWithPadding(new GenericEntity<List<Device>>(store.listDevices()) {
+            });
+        } else {
+            return new JSONWithPadding(new GenericEntity<List<Device>>(store.listDevices()) {
+            }, callback);
+        }
     }
 
     @GET
     @Path("listEnergy/{date}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<EnergyMeasurement> getEnergyList(@PathParam("date") DateParam day) {
-        return store.listEnergyMeasurement(day.getDate());
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    public JSONWithPadding getEnergyList(@PathParam("date") DateParam day,
+                                                 @QueryParam("callback") String callback) {
+        System.out.println("callback id: " + callback);
+        if (null == callback) {
+            return new JSONWithPadding(new GenericEntity<List<EnergyMeasurement>>(store.listEnergyMeasurement(day.getDate())) {
+            });
+        } else {
+            return new JSONWithPadding(new GenericEntity<List<EnergyMeasurement>>(store.listEnergyMeasurement(day.getDate())) {
+            }, callback);
+        }
     }
 
     @GET
     @Path("listEnergyOverview/{deviceId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<EnergyOverview> getEnergyOverviewList(@PathParam("deviceId") int deviceId) {
-        return store.listEnergyOverview(deviceId);
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    public JSONWithPadding getEnergyOverviewList(@PathParam("deviceId") int deviceId, 
+                                                 @QueryParam("callback") String callback) {
+        if (null == callback) {
+            return new JSONWithPadding(new GenericEntity<List<EnergyOverview>>(store.listEnergyOverview(deviceId)) {
+            });
+        } else {
+            return new JSONWithPadding(new GenericEntity<List<EnergyOverview>>(store.listEnergyOverview(deviceId)) {
+            }, callback);
+        }
     }
 
     @GET
     @Path("listGas/{date}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<GasMeasurement> getGasList(@PathParam("date") DateParam day) {
-        return store.listGasMeasurement(day.getDate());
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    public JSONWithPadding getGasList(@PathParam("date") DateParam day, 
+                                      @QueryParam("callback") String callback) {
+        if (null == callback) {
+            return new JSONWithPadding(new GenericEntity<List<GasMeasurement>>(store.listGasMeasurement(day.getDate())) {
+            });
+        } else {
+            return new JSONWithPadding(new GenericEntity<List<GasMeasurement>>(store.listGasMeasurement(day.getDate())) {
+            }, callback);
+        }
     }
 
     @GET
     @Path("listGasOverview/{deviceId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<GasOverview> getGasOverviewList(@PathParam("deviceId") int deviceId) {
-        return store.listGasOverview(deviceId);
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    public JSONWithPadding getGasOverviewList(@PathParam("deviceId") int deviceId, 
+                                              @QueryParam("callback") String callback) {
+        if (null == callback) {
+            return new JSONWithPadding(new GenericEntity<List<GasOverview>>(store.listGasOverview(deviceId)){});
+        } else {
+            return new JSONWithPadding(new GenericEntity<List<GasOverview>>(store.listGasOverview(deviceId)){}, callback);
+        }
     }
 
     @GET

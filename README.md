@@ -3,7 +3,7 @@ Raspberry PI Java Energy Smartmeter application
 
 Java Embedded Suite of Oracle Application which reads the energy meter (gas & electricity) and expose these data as restful service which can be used in your mobile applications  
 All the data are stored every 30 minutes in the Embedded Derby Database  
-and using JAX-RS to expose the data ( accepts JSON and XML ) 
+and using JAX-RS to expose the data ( accepts JSON ,XML , JSONP with callback) 
            
           
 [Used the RJ11/USB P1 Converter Cable](https://sites.google.com/site/nta8130p1smartmeter/webshop)
@@ -124,7 +124,7 @@ Test the application
 --------------------
 
 mkdir /home/pi/smartmeter  
-upload startWeb.sh and the webhost.jar  
+upload startWeb.sh ,jackson-core-asl-1.9.12.jar, jackson-mapper-asl-1.9.12.jar, and the webhost.jar  
 
 Open and build the application in netbeans.
 
@@ -155,8 +155,8 @@ Start in the background and measure for a week
      nohup ./startWeb.sh >/tmp/nohup.out 2>&1 &
           
 
-Retrieve the restful data ( accepts JSON and XML )
---------------------------------------------------
+Retrieve the restful data ( accepts JSON ,XML , JSONP with callback)
+----------------------------------------------------------------------
 
 Open google chrome browser and install and use the advanced rest client plugin.
                                   
