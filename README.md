@@ -2,13 +2,13 @@ Raspberry PI Java Energy Smartmeter application
 ===============================================
 
 Java Embedded Suite of Oracle Application which reads the energy meter (gas & electricity) and expose these data as restful service which can be used in your mobile applications  
-All the data are stored every 30 minutes in the Embedded Derby Database  
-and using JAX-RS to expose the data ( accepts JSON ,XML , JSONP with callback) 
+All the data are stored every 30 minutes in the Embedded Derby Database and using JAX-RS to expose the data ( accepts JSON ,XML , JSONP with callback) 
+
+Also added a HTML5 with JQuery which reads the Restful services plus displays the data  
            
-          
 [Used the RJ11/USB P1 Converter Cable](https://sites.google.com/site/nta8130p1smartmeter/webshop)
 Raspberry Pi B 512mb version
-Tested on a Liander meter ( Netherlands )
+Tested on a Liander energy meter ( Netherlands )
 
 Used Soft-float Debian “wheezy” pi image cause the need for Oracle JDK.  
 This image is identical to the Raspbian “wheezy” image, but uses the slower soft-float ABI. It is only intended for use with software such as the Oracle JVM which does not yet support the hard-float ABI used by Raspbian.
@@ -157,6 +157,12 @@ Start in the background and measure for a week
 
 Retrieve the restful data ( accepts JSON ,XML , JSONP with callback)
 ----------------------------------------------------------------------
+
+Use the following HTTP headers  
+
+Accept: application/json  
+Accept: application/xml  
+Accept: application/x-javascript and add ?callback=1223 to the url  
 
 Open google chrome browser and install and use the advanced rest client plugin.
                                   

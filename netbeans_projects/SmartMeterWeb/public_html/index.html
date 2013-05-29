@@ -1,0 +1,137 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SmartMeter</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="js/libs/jquery-1.9.0/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jqueryui-1.10.0/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/libs/dataTables/jquery.dataTables.min.js"></script>
+
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+        <script>
+            var devices = new Array();
+            var globalUrl = 'http://192.168.2.10:8080/SmartMeter';
+            $.ajax({
+                type: "GET",
+                dataType: "jsonp",
+                crossdomain: true,
+                url: globalUrl + '/listDevices?callback=?',
+                success: function(data, textStatus, xmlHttp) {
+                    // fill the listbox with devices
+                    var options = '<option value="0">Default</option>';
+                    var tabCount = 1;
+
+//                    var tabs = $("#wrap").tabs();
+                    for (var i = 0; i < data.device.length; i++) {
+                        // store array for later use
+                        devices[data.device[i].id] = data.device[i].type;
+
+                        options += '<option value="' + data.device[i].id + '">'
+                                + data.device[i].type + "-" + data.device[i].device
+                                + '</option>';
+//                        tabs.tabs({});
+//                        $('#wrap').append('<div id="page-' + tabCount + '"><p>device serial id: ' + data.device[i].device + '</p></div>');
+//                        $('#wrap').find('ul').append('<li><a href="#page-' + tabCount + '">' + data.device[i].type + '</a></li>');
+                        tabCount++;
+                    }
+//                    var selIndex = tabs.tabs("option", "selected");
+//                    tabs.tabs("destroy").tabs({selected: selIndex});
+                    $("select#device").html(options);
+                },
+                error: function(request, status, error) {
+                    alert('Error Occured');
+                }
+            });
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                $("#device").change(function() {
+                    var val = $(this).val();
+                    if (typeof devices[val] === 'undefined') {
+                        // Your variable is undefined
+                        console.log("do nothing, hide everything");
+                        $('#table_id').empty();
+                    } else if (devices[val] === 'GAS') {
+                        console.log("GAS selected");
+                        $('#table_id').empty();
+                        $.ajax({
+                            type: "GET",
+                            dataType: "jsonp",
+                            crossdomain: true,
+                            url: globalUrl + '/listGasOverview/' + val + '?callback=?',
+                            success: function(json, textStatus, xmlHttp) {
+                                function map(el) {
+                                    return [[el.date.substring(0, 10),el.consumption,el.difference]] 
+                                };
+                                result = $.map(json.gasOverview, map);
+                                $('#table_id').html('<table cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped" id="data"></table>');
+                                $('#data').dataTable({
+                                    "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+                                    "aaData": result,
+                                    "aoColumns": [
+                                        {"sTitle": "date"},
+                                        {"sTitle": "consumption"},
+                                        {"sTitle": "difference"}
+                                     ]
+                                });
+                            },
+                            error: function(request, status, error) {
+                                alert('Error Occured');
+                            }
+                        });
+                    } else if (devices[val] === 'ELEC') {
+                        console.log("ELEC selected");
+                        $('#table_id').empty();
+                        $.ajax({
+                            type: "GET",
+                            dataType: "jsonp",
+                            crossdomain: true,
+                            url: globalUrl + '/listEnergyOverview/' + val + '?callback=?',
+                            success: function(json, textStatus, xmlHttp) {
+                                function map(el) { return [[el.date.substring(0, 10),el.consumption,el.consDifference,el.production,el.prodDifference]] };
+                                result = $.map(json.energyOverview, map);
+                                $('#table_id').html('<table cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped" id="data"></table>');
+                                $('#data').dataTable({
+                                    "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+                                    "aaData": result,
+                                    "aoColumns": [
+                                        {"sTitle": "date"},
+                                        {"sTitle": "consumption"},
+                                        {"sTitle": "difference"},
+                                        {"sTitle": "production"},
+                                        {"sTitle": "difference"}
+                                      ]
+                                });
+                            },
+                            error: function(request, status, error) {
+                                alert('Error Occured');
+                            }
+                        });
+                    }
+
+                });
+            });
+        </script>
+
+    </head>
+    <body>
+        <form>
+            <label for="device">Choose a device</label>
+            <select name="device" id="device" >
+            </select>
+            <!--<div id="wrap">-->
+                <!--<ul></ul>-->
+            <!--</div>-->
+            <div id="table_id">
+            </div>    
+
+        </form>
+
+    </body>
+</html>

@@ -40,7 +40,7 @@ public class SmartMeterSuite {
 
     @GET
     @Path("listDevices")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    @Produces({ "application/x-javascript",MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JSONWithPadding getList(@QueryParam("callback") String callback) {
         System.out.println("callback id: " + callback);
         if (null == callback) {
@@ -54,7 +54,7 @@ public class SmartMeterSuite {
 
     @GET
     @Path("listEnergy/{date}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    @Produces({ "application/x-javascript",MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JSONWithPadding getEnergyList(@PathParam("date") DateParam day,
                                                  @QueryParam("callback") String callback) {
         System.out.println("callback id: " + callback);
@@ -69,7 +69,7 @@ public class SmartMeterSuite {
 
     @GET
     @Path("listEnergyOverview/{deviceId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    @Produces({ "application/x-javascript",MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JSONWithPadding getEnergyOverviewList(@PathParam("deviceId") int deviceId, 
                                                  @QueryParam("callback") String callback) {
         if (null == callback) {
@@ -83,7 +83,7 @@ public class SmartMeterSuite {
 
     @GET
     @Path("listGas/{date}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    @Produces({ "application/x-javascript",MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JSONWithPadding getGasList(@PathParam("date") DateParam day, 
                                       @QueryParam("callback") String callback) {
         if (null == callback) {
@@ -97,7 +97,7 @@ public class SmartMeterSuite {
 
     @GET
     @Path("listGasOverview/{deviceId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, "application/x-javascript"})
+    @Produces({ "application/x-javascript",MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JSONWithPadding getGasOverviewList(@PathParam("deviceId") int deviceId, 
                                               @QueryParam("callback") String callback) {
         if (null == callback) {
