@@ -21,13 +21,14 @@ function showElecOverview(val, globalUrl, tableId,pageId) {
             tableField.find('#elecdata').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
                 "aaData": result,
+                "aaSorting": [[1, 'desc']],
                 "aoColumns": [
                     {"sTitle": "date"},
                     {"sTitle": "consumption"},
                     {"sTitle": "difference"},
                     {"sTitle": "production"},
                     {"sTitle": "difference"}
-                ]
+                ]              
             });
         },
         error: function(request, status, error) {
@@ -49,6 +50,7 @@ function showElecMeasurement(date, globalUrl, tableId,pageId) {
                 return [[el.time.substring(0, 16), el.meter181,el.meter182,el.meter281,el.meter282, el.currentConsumption,el.currentProduction]];
             };
 
+
           if ( json !== null) {  
             result = $.map(json.energyMeasurement, map);
             tableField = $("#wrap").find('#'+pageId).find('#'+tableId);
@@ -56,15 +58,19 @@ function showElecMeasurement(date, globalUrl, tableId,pageId) {
             tableField.find('#elecdata2').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
                 "aaData": result,
+                "bAutoWidth" : false,
+                "aaSorting": [[1, 'desc']],
                 "aoColumns": [
-                    {"sTitle": "time"},
-                    {"sTitle": "181"},
-                    {"sTitle": "182"},
-                    {"sTitle": "281"},
-                    {"sTitle": "282"},
-                    {"sTitle": "consumption"},
-                    {"sTitle": "production"}
+                    {"sTitle": "time"       ,"sWidth": "30%" },
+                    {"sTitle": "181"        ,"sWidth": "15%"},
+                    {"sTitle": "182"        ,"sWidth": "15%"},
+                    {"sTitle": "281"        ,"sWidth": "15%"},
+                    {"sTitle": "282"        ,"sWidth": "15%"},
+                    {"sTitle": "consumption","sWidth": "20%"},
+                    {"sTitle": "production" ,"sWidth": "20%"},
                 ]
+                
+                
             });
           }
         },

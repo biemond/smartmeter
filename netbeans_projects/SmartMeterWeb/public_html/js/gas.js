@@ -21,6 +21,7 @@ function showGasOverview(val, globalUrl, tableId,pageId) {
             tableField.find('#dataGas').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
                 "aaData": result,
+                "aaSorting": [[1, 'desc']],
                 "aoColumns": [
                     {"sTitle": "date"},
                     {"sTitle": "consumption"},
@@ -55,6 +56,7 @@ function showGasMeasurement(date, globalUrl, tableId,pageId) {
             tableField.find('#gasdata2').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
                 "aaData": result,
+                "aaSorting": [[1, 'desc']],
                 "aoColumns": [
                     {"sTitle": "time"},
                     {"sTitle": "measurement"},
