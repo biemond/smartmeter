@@ -3,7 +3,8 @@
  * and open the template in the editor.
  */
 
-function showElecOverview(val, globalUrl, tableId,pageId) {
+function showElecOverview(val, globalUrl, tabNr) {
+    
     
     $.ajax({
         type: "GET",
@@ -11,10 +12,29 @@ function showElecOverview(val, globalUrl, tableId,pageId) {
         crossdomain: true,
         url: globalUrl + '/listEnergyOverview/' + val + '?callback=?',
         success: function(json, textStatus, xmlHttp) {
+           tableId = 'table_id-'+tabNr;
+           pageId  = 'page-'+tabNr;
+           chartId = 'chart_id-'+tabNr;
+           console.log(pageId + " "+tableId+ " "+chartId);
+
+            
             function map(el) {
                 return [[el.date.substring(0, 10), el.consumption, el.consDifference, el.production, el.prodDifference]];
-            }
-            ;
+            };
+            
+            function map2(el) {
+                return [[ el.consDifference, -1 * el.prodDifference]];
+            };
+            result2 = $.map(json.energyOverview, map2);            
+            chartField = $("#wrap").find('#'+pageId).find('#'+chartId);
+            chartField.sparkline(result2, {type: 'bar', 
+                                           disableHiddenCheck: true,
+                                           height: '150px',
+                                           tooltipSuffix: ' energy difference in KWH',
+                                           stackedBarColor: ['red','blue']
+                                           });
+
+            
             result = $.map(json.energyOverview, map);
             tableField = $("#wrap").find('#'+pageId).find('#'+tableId);
             tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped" id="elecdata"></table>');
@@ -38,7 +58,9 @@ function showElecOverview(val, globalUrl, tableId,pageId) {
 
 }
 
-function showElecMeasurement(date, globalUrl, tableId,pageId) {
+function showElecMeasurement(date, globalUrl, tabNr) {
+
+
 
     $.ajax({
         type: "GET",
@@ -46,6 +68,11 @@ function showElecMeasurement(date, globalUrl, tableId,pageId) {
         crossdomain: true,
         url: globalUrl + '/listEnergy/' + date + '?callback=?',
         success: function(json, textStatus, xmlHttp) {
+           tableId = 'table2_id-'+tabNr;
+           pageId  = 'page-'+tabNr;  
+           chartId = 'chart2_id-'+tabNr;
+           console.log(pageId + " "+tableId+ " "+chartId);
+    
             function map(el) {
                 return [[el.time.substring(0, 16), el.meter181,el.meter182,el.meter281,el.meter282, el.currentConsumption,el.currentProduction]];
             };

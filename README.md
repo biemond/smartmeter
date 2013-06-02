@@ -5,6 +5,18 @@ Java Embedded Suite of Oracle Application which reads the energy meter (gas & el
 All the data are stored every 30 minutes in the Embedded Derby Database and using JAX-RS to expose the data ( accepts JSON ,XML , JSONP with callback) 
 
 Also added a HTML5 with JQuery which reads the Restful services plus displays the data  
+
+Here some screenshots
+
+![Energy page](https://raw.github.com/biemond/smartmeter/master/elec1.png)
+
+![Energy page part 2](https://raw.github.com/biemond/smartmeter/master/elec2.png)
+
+![Gas page](https://raw.github.com/biemond/smartmeter/master/gas1.png)
+
+![Gas page part 2](https://raw.github.com/biemond/smartmeter/master/gas2.png)
+
+
            
 [Used the RJ11/USB P1 Converter Cable](https://sites.google.com/site/nta8130p1smartmeter/webshop)
 Raspberry Pi B 512mb version
