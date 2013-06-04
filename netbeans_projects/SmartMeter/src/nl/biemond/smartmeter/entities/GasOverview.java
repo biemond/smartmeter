@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class GasOverview {
 
-    public GasOverview( Date date, float consumption, int difference, Device device) {
+    public GasOverview( Date date, float consumption, double difference, Device device) {
         this.device = device;
         this.date = date;
         this.consumption = consumption;
@@ -27,6 +27,6 @@ public class GasOverview {
     public Device device;    
     public Date date;
     public float consumption;
-    public int difference;
+    public double difference;
 
 }

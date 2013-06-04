@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -294,7 +295,7 @@ public class MeasurementsDbStore {
         ArrayList<GasOverview> list = new ArrayList<>();
         try {
             String select  = 
-                      " SELECT date, CAST(avg(measurement) AS NUMERIC(8,2)), d.id, d.type, d.device"
+                      " SELECT date, CAST(max(measurement) AS NUMERIC(8,2)), d.id, d.type, d.device"
                     + " FROM gas_measurements e "
                     + " ,    devices d "
                     + " WHERE e.device = d.id "
@@ -316,7 +317,7 @@ public class MeasurementsDbStore {
                 list.add(new GasOverview(
                         resultset.getDate(1),
                         resultset.getFloat(2),
-                        Math.round(difference),
+                        roundTwoDecimals(difference),
                         new Device(
                         resultset.getInt(3),
                         resultset.getString(4),
@@ -421,8 +422,8 @@ public class MeasurementsDbStore {
         try {
             String select  = 
                       " SELECT date, "
-                    + " CAST(avg(meter181+meter182) AS NUMERIC(8,2)), "
-                    + " CAST(avg(meter281+meter282) AS NUMERIC(8,2)), "
+                    + " CAST(max(meter181+meter182) AS NUMERIC(8,2)), "
+                    + " CAST(max(meter281+meter282) AS NUMERIC(8,2)), "
                     + " d.id, d.type, d.device"
                     + " FROM energy_measurements e "
                     + " ,    devices d "
@@ -451,9 +452,9 @@ public class MeasurementsDbStore {
                 list.add(new EnergyOverview(
                         resultset.getDate(1),
                         resultset.getFloat(2),
-                        Math.round(differenceConsumption),
+                        roundTwoDecimals(differenceConsumption),
                         resultset.getFloat(3),
-                        Math.round(differenceProduction),
+                        roundTwoDecimals(differenceProduction),
                         new Device(
                         resultset.getInt(4),
                         resultset.getString(5),
@@ -495,5 +496,12 @@ public class MeasurementsDbStore {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+     
+        
     }
+    private double roundTwoDecimals(double d) {
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        return Double.valueOf(twoDForm.format(d));
+    }      
+
 }

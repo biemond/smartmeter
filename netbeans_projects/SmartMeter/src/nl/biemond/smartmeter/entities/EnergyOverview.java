@@ -17,7 +17,7 @@ public class EnergyOverview {
     public EnergyOverview() {
     }
 
-    public EnergyOverview(Date date, float consumption, int consDifference, float production, int prodDifference, Device device) {
+    public EnergyOverview(Date date, float consumption, double consDifference, float production, double prodDifference, Device device) {
         this.date = date;
         this.consumption = consumption;
         this.consDifference = consDifference;
@@ -28,9 +28,9 @@ public class EnergyOverview {
     
     public Date date;
     public float consumption;
-    public int consDifference;
+    public double consDifference;
     public float production;
-    public int prodDifference;
+    public double prodDifference;
     public Device device;
     
 }
