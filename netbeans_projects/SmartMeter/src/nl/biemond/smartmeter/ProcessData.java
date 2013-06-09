@@ -6,6 +6,7 @@ package nl.biemond.smartmeter;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,8 +44,9 @@ public class ProcessData {
             int timeout = 2000;
             while ( 1 != 0 ) {
 
-                CommPort commPort = portIdentifier.open(this.getClass().getName(), timeout);
-                if (commPort instanceof SerialPort) {
+                try {
+                  CommPort commPort = portIdentifier.open(this.getClass().getName(), timeout);
+                  if (commPort instanceof SerialPort) {
                     SerialPort serialPort = (SerialPort) commPort;
 
                     serialPort.setSerialPortParams(9600,
@@ -55,11 +57,14 @@ public class ProcessData {
                     InputStream in = serialPort.getInputStream();
                     Thread myThread = new Thread(new SerialReader(in,commPort));
                     myThread.start();
-
-
-                } else {
+                  } else {
                     System.out.println("Error: Only serial ports are handled by this example.");
+                  }
+                }catch ( PortInUseException ex) {
+                    System.out.println("PortInUseException , lets wait for another turn");
                 }
+
+
                 Thread.sleep(1800000);
             }
         }
