@@ -37,7 +37,7 @@ function showElecOverview(val, globalUrl, tabNr) {
             
             result = $.map(json.energyOverview, map);
             tableField = $("#wrap").find('#'+pageId).find('#'+tableId);
-            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped" id="elecdata"></table>');
+            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="pretty" id="elecdata"></table>');
             tableField.find('#elecdata').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
                 "aaData": result,
@@ -81,7 +81,7 @@ function showElecMeasurement(date, globalUrl, tabNr) {
           if ( json !== null) {  
             result = $.map(json.energyMeasurement, map);
             tableField = $("#wrap").find('#'+pageId).find('#'+tableId);
-            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped" id="elecdata2"></table>');
+            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="pretty" id="elecdata2"></table>');
             tableField.find('#elecdata2').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
                 "aaData": result,

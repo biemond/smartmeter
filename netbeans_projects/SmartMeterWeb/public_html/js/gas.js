@@ -40,7 +40,7 @@ function showGasOverview(val, globalUrl, tabNr) {
  
          
             tableField = $("#wrap").find('#'+pageId).find('#'+tableId);
-            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped" id="dataGas"></table>');
+            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="pretty" id="dataGas"></table>');
 
             tableField.find('#dataGas').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
@@ -86,7 +86,7 @@ function showGasMeasurement(date, globalUrl, tabNr) {
             
             
             tableField = $("#wrap").find('#'+pageId).find('#'+tableId);
-            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped" id="gasdata2"></table>');
+            tableField.html('<table cellpadding="0" cellspacing="0" border="0" class="pretty" id="gasdata2"></table>');
             tableField.find('#gasdata2').dataTable({
                 "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
                 "aaData": result,
