@@ -308,11 +308,21 @@ public class MeasurementsDbStore {
             
             float lastEntry = 0;
             float difference = 0;
+            Date  lastMeasurementDate  = null;
             while (resultset.next()) {
-                
+
+                Date now = resultset.getDate(1); // 03-01-2014 
+                Date temp = new Date(now.getTime() - DAY_MILLIS); // 02-01-2014
+
                 if ( lastEntry != 0 ){
-                    difference =  resultset.getFloat(2) - lastEntry;
+                    if (temp.equals(lastMeasurementDate)) {
+                      difference =  resultset.getFloat(2) - lastEntry;
+                    } else {
+                      difference = 0;
+                    } 
                 }
+                lastMeasurementDate = resultset.getDate(1);
+
                 lastEntry = resultset.getFloat(2);
                 list.add(new GasOverview(
                         resultset.getDate(1),
@@ -415,6 +425,8 @@ public class MeasurementsDbStore {
         return list;
     }
 
+    final static long DAY_MILLIS = 86400000;
+
     public List<EnergyOverview> listEnergyOverview(int deviceId) {
         System.out.println("EnergyOverview for deviceId: "+deviceId);
         ResultSet resultset = null;
@@ -439,15 +451,29 @@ public class MeasurementsDbStore {
             float differenceConsumption = 0;
             float lastEntryProduction = 0;
             float differenceProduction = 0;
+            Date  lastMeasurementDate  = null;
             while (resultset.next()) {
-                
+
+                Date now = resultset.getDate(1); // 03-01-2014 
+                Date temp = new Date(now.getTime() - DAY_MILLIS); // 02-01-2014
+ 
                 if ( lastEntryConsumption != 0 ){
-                    differenceConsumption = resultset.getFloat(2) -lastEntryConsumption;
+                    if (temp.equals(lastMeasurementDate)) {
+                      differenceConsumption = resultset.getFloat(2) -lastEntryConsumption;
+                    } else {
+                      differenceConsumption = 0;
+                    } 
                 }
                 lastEntryConsumption = resultset.getFloat(2);
                 if ( lastEntryProduction != 0 ){
-                    differenceProduction = resultset.getFloat(3) -lastEntryProduction;
+                    if (temp.equals(lastMeasurementDate)) {
+                      differenceProduction = resultset.getFloat(3) -lastEntryProduction;
+                    } else {
+                      differenceProduction = 0;
+                    } 
                 }
+                
+                lastMeasurementDate = resultset.getDate(1);
                 lastEntryProduction = resultset.getFloat(3);
                 list.add(new EnergyOverview(
                         resultset.getDate(1),
